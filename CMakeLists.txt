@@ -1,8 +1,18 @@
-﻿cmake_minimum_required (VERSION 3.8)
+﻿cmake_minimum_required (VERSION 3.14)
+include(FetchContent)
 
-project ("space")
+project("space")
 
-add_executable (space "src/main.c")
+add_executable(space "src/main.c"
+        "src/engine/window.h"
+        "src/engine/event.h")
+
+FetchContent_Declare(flecs
+        GIT_REPOSITORY https://github.com/SanderMertens/flecs.git
+        GIT_TAG v4.0.2
+)
+
+FetchContent_MakeAvailable(flecs)
 
 find_package(SDL2 REQUIRED CONFIG REQUIRED COMPONENTS SDL2)
 find_package(SDL2 REQUIRED CONFIG REQUIRED COMPONENTS SDL2main)
@@ -12,3 +22,4 @@ if (CMAKE_VERSION VERSION_GREATER 3.12)
 endif()
 
 target_link_libraries(space PRIVATE SDL2::SDL2main SDL2::SDL2)
+target_link_libraries(space PRIVATE flecs::flecs_static)

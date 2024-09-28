@@ -1,36 +1,43 @@
-﻿I#include <stdio.h>
+﻿#include <stdio.h>
 
 #include <SDL.h>
+#include <flecs.h>
+
+#include "engine/window.h"
+#include "engine/event.h"
 
 int main(int argc, char *argv[]) {
   SDL_Init(SDL_INIT_VIDEO);
 
-  SDL_Window *window =
-      SDL_CreateWindow("Space", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                       640, 480, SDL_WINDOW_SHOWN);
-  SDL_Renderer *renderer =
-      SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+  ecs_world_t* world = ecs_init();
 
-  int running = 1;
+  ECS_COMPONENT(world, window_c);
+  ECS_COMPONENT(world, sdl_events_c);
+
+  ECS_SYSTEM(world, renderer_begin_s, EcsPreFrame, window_c);
+  ECS_SYSTEM(world, renderer_end_s, EcsPostFrame, window_c);
+  ECS_SYSTEM(world, handle_sdl_events_s, EcsPreFrame, sdl_events_c);
+
+  window_c window;
+  window_c_init(&window);
+  ecs_singleton_set_ptr(world, window_c, &window);
+
+  sdl_events_c sdl_events;
+  sdl_events_c_init(&sdl_events);
+  ecs_singleton_set_ptr(world, sdl_events_c, &sdl_events);
+
+  bool running = true;
   while (running) {
-    SDL_Event event;
+    if (ecs_singleton_get(world, sdl_events_c)->shutdown_requested)
+      running = false;
 
-    while (SDL_PollEvent(&event)) {
-      switch (event.type) {
-      case SDL_QUIT:
-        running = 0;
-      default:
-      }
-    }
-
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-    SDL_RenderClear(renderer);
-
-    SDL_RenderPresent(renderer);
+    ecs_progress(world, 0);
   }
 
-  SDL_DestroyWindow(window);
+  window_c_destroy(&window);
+
   SDL_Quit();
+  ecs_fini(world);
 
   return 0;
 }
