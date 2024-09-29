@@ -7,6 +7,8 @@ typedef struct window_c {
   SDL_Renderer *sdl_renderer;
 } window_c;
 
+ECS_COMPONENT_DECLARE(window_c);
+
 void window_c_init(window_c *window) {
   // TODO: assert window is not null
   // TODO: assert SDL initialized

@@ -3,9 +3,13 @@ include(FetchContent)
 
 project("space")
 
-add_executable(space "src/main.c"
+add_executable(space
+        "src/main.c"
         "src/engine/window.h"
-        "src/engine/event.h")
+        "src/engine/event.h"
+        "src/engine/vec.h"
+        "src/engine/transform.h"
+        "src/engine/collider.h")
 
 FetchContent_Declare(flecs
         GIT_REPOSITORY https://github.com/SanderMertens/flecs.git
