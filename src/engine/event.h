@@ -15,20 +15,23 @@ typedef struct sdl_events_c {
 } sdl_events_c;
 
 void sdl_events_c_init(sdl_events_c *events) {
+  ASSERT_NOT_NULL(events);
+
   events->shutdown_requested = false;
   events->event_count = 0;
   memset(events->events, 0xDEAD, sizeof(SDL_Event) * MAX_SDL_EVENTS);
 }
 
 void sdl_events_c_append(sdl_events_c* self, const SDL_Event event) {
+  ASSERT_NOT_NULL(self);
+
   self->event_count = (self->event_count + 1) % MAX_SDL_EVENTS;
   self->events[self->event_count] = event;
 }
 
 void handle_sdl_events_s(ecs_iter_t* it) {
-  // TODO: assert iterator is not null
+  ASSERT_NOT_NULL(it);
   sdl_events_c* events = ecs_field(it, sdl_events_c, 0);
-  // TODO: assert that window exists once
 
   sdl_events_c_init(events);
 

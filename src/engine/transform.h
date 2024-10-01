@@ -10,6 +10,7 @@ typedef struct transform_c {
 ECS_COMPONENT_DECLARE(transform_c);
 
 void transform_c_init(transform_c *transform) {
+  ASSERT_NOT_NULL(transform);
   transform->position = vf2_new(0, 0);
   transform->rotation = 0;
 }

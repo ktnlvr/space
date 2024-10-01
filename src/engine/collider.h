@@ -18,15 +18,17 @@ typedef struct collider_c {
 
 ECS_COMPONENT_DECLARE(collider_c);
 
-void collider_c_init_circle(collider_c *collider, float radius) {
+void collider_c_init_circle(collider_c *collider, const float radius) {
+  ASSERT_NOT_NULL(collider);
+
   collider->kind = COLLIDER_KIND_E_CIRCLE;
   collider->circle.radius = radius;
 }
 
-vf2 get_circle_points(char idx) {
-  float sqrt2 = 1.414213562f;
-  float sqrt3 = 1.73205080757;
-  vf2 circle_points[16] = {
+vf2 get_circle_points(const char idx) {
+  const float sqrt2 = 1.414213562f;
+  const float sqrt3 = 1.73205080757;
+  const vf2 circle_points[16] = {
       {2, 0},  {sqrt3, 1},   {sqrt2, sqrt2},   {1, sqrt3},
       {0, 2},  {-1, sqrt3},  {-sqrt2, sqrt2},  {-sqrt3, 1},
       {-2, 0}, {-sqrt3, -1}, {-sqrt2, -sqrt2}, {-1, -sqrt3},
@@ -36,7 +38,8 @@ vf2 get_circle_points(char idx) {
 }
 
 void debug_draw_colliders_s(ecs_iter_t *it) {
-  // TODO: assert it not empty
+  ASSERT_NOT_NULL(it);
+
   const window_c *window = ecs_field(it, window_c, 0);
   const collider_c *colliders = ecs_field(it, collider_c, 1);
   const transform_c *transforms = ecs_field(it, transform_c, 2);

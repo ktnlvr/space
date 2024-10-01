@@ -1,5 +1,7 @@
 #pragma once
 
+#include "defs.h"
+
 #include <SDL.h>
 
 typedef struct window_c {
@@ -10,9 +12,9 @@ typedef struct window_c {
 ECS_COMPONENT_DECLARE(window_c);
 
 void window_c_init(window_c *window) {
-  // TODO: assert window is not null
-  // TODO: assert SDL initialized
-  // TODO: assert display exists
+  ASSERT_NOT_NULL(window);
+  ASSERT(SDL_WasInit(0));
+  ASSERT_NEQ(SDL_GetNumVideoDrivers(), 0);
 
   window->sdl_window =
       SDL_CreateWindow("Space", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
@@ -21,22 +23,24 @@ void window_c_init(window_c *window) {
 }
 
 void window_c_destroy(const window_c* window) {
+  ASSERT_NOT_NULL(window);
   SDL_DestroyWindow(window->sdl_window);
 }
 
 void renderer_begin_s(ecs_iter_t *it) {
-  // TODO: assert iterator is not null
+  ASSERT_NOT_NULL(it);
+
   const window_c* window = ecs_field(it, window_c, 0);
-  // TODO: assert that window exists once
+  ASSERT_NOT_NULL(window);
 
   SDL_SetRenderDrawColor(window->sdl_renderer, 0, 0, 0, 255);
   SDL_RenderClear(window->sdl_renderer);
 }
 
 void renderer_end_s(ecs_iter_t *it) {
-  // TODO: assert iterator is not null
+  ASSERT_NOT_NULL(it);
   const window_c* window = ecs_field(it, window_c, 0);
-  // TODO: assert that window exists once
+  ASSERT_NOT_NULL(window);
 
   SDL_RenderPresent(window->sdl_renderer);
 }

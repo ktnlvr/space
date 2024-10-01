@@ -2,6 +2,8 @@
 
 #include <math.h>
 
+#include "defs.h"
+
 typedef struct vf2 {
   float x, y;
 } vf2;
@@ -33,7 +35,11 @@ vf2 vf2_scale(const float c, const vf2 v) { return vf2_new(c * v.x, c * v.y); }
 
 float vf2_magnitude2(const vf2 v) { return v.x * v.x + v.y * v.y; }
 
-float vf2_magnitude(const vf2 v) { return sqrtf(vf2_magnitude2(v)); }
+float vf2_magnitude(const vf2 v) {
+  const float magnitude2 = vf2_magnitude2(v);
+  ASSERT(magnitude2 >= 0.);
+  return sqrtf(magnitude2);
+}
 
 vf2 vf2_norm_unchecked(const vf2 v) {
   return vf2_scale(1. / vf2_magnitude(v), v);

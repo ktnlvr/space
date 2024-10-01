@@ -13,6 +13,9 @@ typedef struct rigidbody_c {
 } rigidbody_c;
 
 void rigidbody_c_init(rigidbody_c *rigidbody, const float mass) {
+  ASSERT_NOT_NULL(rigidbody);
+  ASSERT(mass > 0.);
+
   rigidbody->mass = mass;
   rigidbody->damping = 0.;
   rigidbody->velocity = vf2_zero();
@@ -21,26 +24,40 @@ void rigidbody_c_init(rigidbody_c *rigidbody, const float mass) {
 }
 
 void rigidbody_c_apply_force(rigidbody_c *rigidbody, const vf2 force) {
+  ASSERT_NOT_NULL(rigidbody);
+
   rigidbody->accumulated_force = vf2_add(force, rigidbody->accumulated_force);
 }
 
 float rigidbody_c_inv_mass(rigidbody_c* rigidbody) {
+  ASSERT_NOT_NULL(rigidbody);
+
   if (rigidbody->mass == 0.0f)
     return 0.;
   return 1. / rigidbody->mass;
 }
 
 void clear_forces_s(ecs_iter_t* it) {
+  ASSERT_NOT_NULL(it);
+
   rigidbody_c* rbs = ecs_field(it, rigidbody_c, 0);
+  ASSERT_NOT_NULL(rbs);
+
   for (int i = 0; i < it->count; i += 1)
     rbs[i].accumulated_force = vf2_zero();
 }
 
 void integrate_physics_s(ecs_iter_t *it) {
+  ASSERT_NOT_NULL(it);
+
   const float dt = it->delta_time;
+  ASSERT(dt > 0.);
 
   transform_c *transforms = ecs_field(it, transform_c, 0);
   rigidbody_c *rigidbodies = ecs_field(it, rigidbody_c, 1);
+
+  ASSERT_NOT_NULL(transforms);
+  ASSERT_NOT_NULL(rigidbodies);
 
   for (size_t i = 0; i < it->count; i += 1) {
     rigidbody_c *rb = &rigidbodies[i];
