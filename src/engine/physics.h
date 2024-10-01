@@ -46,7 +46,7 @@ void integrate_physics_s(ecs_iter_t *it) {
     rigidbody_c *rb = &rigidbodies[i];
     transform_c *tr = &transforms[i];
 
-    rigidbody_c_apply_force(rb, vf2_new_y(19600));
+    rigidbody_c_apply_force(rb, vf2_new_y(1960));
 
     vf2 resulting_acceleration = rb->acceleration;
     const vf2 acceleration_from_forces = vf2_scale(rigidbody_c_inv_mass(rb), rb->accumulated_force);

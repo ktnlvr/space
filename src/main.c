@@ -72,6 +72,7 @@ int main(int argc, char *argv[]) {
 
   transform_c ball_transform;
   transform_c_init(&ball_transform);
+  ball_transform.position.x = 200;
   collider_c ball_collider;
   collider_c_init_circle(&ball_collider, 12.);
   rigidbody_c ball_rb;
