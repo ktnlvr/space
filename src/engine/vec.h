@@ -13,6 +13,14 @@ vf2 vf2_new(const float x, const float y) {
   return ret;
 }
 
+vf2 vf2_new_y(const float y) {
+  return vf2_new(0, y);
+}
+
+vf2 vf2_new_x(const float x) {
+  return vf2_new(x, 0);
+}
+
 vf2 vf2_zero() { return vf2_new(0, 0); }
 
 vf2 vf2_default() { return vf2_zero(); }

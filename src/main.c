@@ -7,6 +7,7 @@
 #include "engine/event.h"
 #include "engine/transform.h"
 #include "engine/window.h"
+#include "engine/physics.h"
 #include "inputs.h"
 
 void move_player(ecs_iter_t *it) {
@@ -29,13 +30,20 @@ int main(int argc, char *argv[]) {
   ECS_COMPONENT(world, collider_c);
   ECS_COMPONENT(world, transform_c);
   ECS_COMPONENT(world, inputs_c);
+  ECS_COMPONENT(world, rigidbody_c);
 
   ECS_SYSTEM(world, renderer_begin_s, EcsPreFrame, window_c($));
   ECS_SYSTEM(world, renderer_end_s, EcsPostFrame, window_c($));
+
   ECS_SYSTEM(world, handle_sdl_events_s, EcsPreFrame, sdl_events_c($));
-  ECS_SYSTEM(world, debug_draw_colliders_s, EcsPostUpdate, window_c($), collider_c, ?transform_c);
+
+  ECS_TAG(world, player_tag);
   ECS_SYSTEM(world, handle_inputs_s, EcsPreFrame, inputs_c($));
-  ECS_SYSTEM(world, move_player, EcsOnUpdate, inputs_c($), transform_c);
+  ECS_SYSTEM(world, move_player, EcsOnUpdate, inputs_c($), transform_c, player_tag);
+
+  ECS_SYSTEM(world, debug_draw_colliders_s, EcsPostUpdate, window_c($), collider_c, ?transform_c);
+  ECS_SYSTEM(world, integrate_physics_s, EcsPreUpdate, transform_c, rigidbody_c);
+  ECS_SYSTEM(world, clear_forces_s, EcsPreUpdate, rigidbody_c);
 
   window_c window;
   window_c_init(&window);
@@ -60,6 +68,19 @@ int main(int argc, char *argv[]) {
   ecs_entity_t player = ecs_new(world);
   ecs_set_ptr(world, player, collider_c, &circle_collider);
   ecs_set_ptr(world, player, transform_c, &player_transform);
+  ecs_add(world, player, player_tag);
+
+  transform_c ball_transform;
+  transform_c_init(&ball_transform);
+  collider_c ball_collider;
+  collider_c_init_circle(&ball_collider, 12.);
+  rigidbody_c ball_rb;
+  rigidbody_c_init(&ball_rb, 100.);
+
+  ecs_entity_t ball = ecs_new(world);
+  ecs_set_ptr(world, ball, collider_c, &ball_collider);
+  ecs_set_ptr(world, ball, transform_c, &ball_transform);
+  ecs_set_ptr(world, ball, rigidbody_c, &ball_rb);
 
   bool running = true;
   while (running) {

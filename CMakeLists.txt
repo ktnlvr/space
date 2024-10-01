@@ -10,7 +10,8 @@ add_executable(space
         "src/engine/vec.h"
         "src/engine/transform.h"
         "src/engine/collider.h"
-        src/inputs.h)
+        src/inputs.h
+        src/engine/physics.h)
 
 FetchContent_Declare(flecs
         GIT_REPOSITORY https://github.com/SanderMertens/flecs.git

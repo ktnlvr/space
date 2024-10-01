@@ -51,7 +51,7 @@ void debug_draw_colliders_s(ecs_iter_t *it) {
 
     switch (colliders[i].kind) {
     case COLLIDER_KIND_E_CIRCLE:
-      SDL_RenderDrawPoint(window->sdl_renderer, 0, 0);
+      SDL_RenderDrawPoint(window->sdl_renderer, center.x, center.y);
       for (char j = 0; j < 16; j++) {
         const char k = (j + 1) % 16;
         const float r = colliders[i].circle.radius;
